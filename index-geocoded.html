@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Wellenweise Veranstaltungen – Ostsee Kalender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body {
+      font-family: 'Lora', serif;
+      background: #fdfcf9;
+      color: #2c3e50;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    #filters {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    #filters select, #filters input {
+      margin: 0.5rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    #calendar {
+      margin-bottom: 3rem;
+    }
+    #map {
+      height: 400px;
+      margin-bottom: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Wellenweise Veranstaltungen an der Ostsee</h1>
+
+<div id="filters">
+  <select id="categoryFilter">
+    <option value="all">Alle Kategorien</option>
+    <option value="Lesung">Lesung</option>
+    <option value="Kunst">Kunst</option>
+    <option value="Wanderung">Wanderung</option>
+    <option value="Kochkurs">Kochkurs</option>
+    <option value="Markt">Markt</option>
+    <option value="Ausstellung">Ausstellung</option>
+  </select>
+  <input type="text" id="searchInput" placeholder="Suche nach Veranstaltungen...">
+</div>
+
+<div id="calendar"></div>
+
+<h2>Veranstaltungen auf der Karte</h2>
+<div id="map"></div>
+
+<script>
+  let allEvents = [];
+
+  async function loadEvents() {
+    const response = await fetch("events-geocoded.json");
+    const data = await response.json();
+    allEvents = data;
+    renderCalendar(data);
+    renderMap(data);
+  }
+
+  function renderCalendar(events) {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'de',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,listWeek'
+      },
+      events: events.map(e => ({
+        title: e.title,
+        start: e.start,
+        description: e.description,
+        url: e.url,
+        category: e.category
+      })),
+      eventClick: function (info) {
+        info.jsEvent.preventDefault();
+        if (info.event.url) {
+          window.open(info.event.url, '_blank');
+        }
+      }
+    });
+    calendar.render();
+
+    document.getElementById('categoryFilter').addEventListener('change', () => filterCalendar(calendar));
+    document.getElementById('searchInput').addEventListener('input', () => filterCalendar(calendar));
+  }
+
+  function filterCalendar(calendar) {
+    const category = document.getElementById('categoryFilter').value;
+    const search = document.getElementById('searchInput').value.toLowerCase();
+
+    const filtered = allEvents.filter(e =>
+      (category === 'all' || e.category === category) &&
+      (e.title.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
+    );
+
+    calendar.removeAllEvents();
+    calendar.addEventSource(filtered.map(e => ({
+      title: e.title,
+      start: e.start,
+      description: e.description,
+      url: e.url,
+      category: e.category
+    })));
+  }
+
+  function renderMap(events) {
+    const map = L.map('map').setView([54.1, 12.1], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap-Mitwirkende'
+    }).addTo(map);
+
+    events.forEach(e => {
+      if (e.coordinates) {
+        L.marker(e.coordinates).addTo(map)
+          .bindPopup(`<b>${e.title}</b><br>${e.description}<br><a href="${e.url}" target="_blank">Zur Veranstaltung</a>`);
+      }
+    });
+  }
+
+  loadEvents();
+</script>
+
+</body>
+</html>

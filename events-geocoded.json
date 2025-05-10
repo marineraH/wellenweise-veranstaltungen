@@ -1,0 +1,46 @@
+[
+  {
+    "title": "Lesung am Meer: Gedanken zwischen den Wellen",
+    "start": "2025-06-22",
+    "description": "Eine literarische Reise mit Klangschalen und Meerblick – Worte, die Wellen schlagen.",
+    "url": "https://www.kuehlungsborn-lesung.de",
+    "category": "Lesung",
+    "coordinates": [
+      54.1522,
+      11.7436
+    ]
+  },
+  {
+    "title": "Achtsam wandern auf dem Hochuferweg",
+    "start": "2025-06-25",
+    "description": "Geführte Wanderung mit Achtsamkeitsübungen durch die Natur rund um den Königsstuhl.",
+    "url": "https://www.nationalpark-zentrum-koenigsstuhl.de",
+    "category": "Wanderung",
+    "coordinates": [
+      54.5672,
+      13.6611
+    ]
+  },
+  {
+    "title": "Kochkurs: Ostsee-Küche entdecken",
+    "start": "2025-06-28",
+    "description": "Lerne die regionale Küche der Ostsee kennen und koche gemeinsam in entspannter Atmosphäre.",
+    "url": "https://www.ostseekochkurse.de",
+    "category": "Kochkurs",
+    "coordinates": [
+      54.0843,
+      12.1136
+    ]
+  },
+  {
+    "title": "Kunstmarkt in Ahrenshoop",
+    "start": "2025-07-04",
+    "description": "Künstler aus der Region präsentieren Werke direkt am Meer – Inspiration garantiert.",
+    "url": "https://www.kuenstlerort-ahrenshoop.de/veranstaltungen",
+    "category": "Kunst",
+    "coordinates": [
+      54.3876,
+      12.4386
+    ]
+  }
+]
